@@ -56,11 +56,17 @@ private:
 	float x, y;
 
 public:
+	
 	Point2D(int x, int y);
 	Point2D();
 	Point2D(const Point2D& p2d);
 	float Distance(Point2D p2d);
 	string toString();
+
+	float getX();
+	float getY();
+	void setX(float x);
+	void setY(float y);
 
 	Point2D operator+(const Point2D& p2d);
 	bool operator==(const Point2D& p2d);

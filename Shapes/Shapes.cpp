@@ -41,7 +41,7 @@ int main(int argc, char* args[])
 	
 	// handle events
 	std::stringstream ss;
-
+/*
 	while (!quit)
 
 	{
@@ -109,14 +109,14 @@ int main(int argc, char* args[])
 
 	}
 
-	           
+	  */         
 
 	Render(vsp, renderer,x, y);
 
 	//SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer); 
 
-	//SDL_Delay(3000);
+	SDL_Delay(3000);
 
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
@@ -157,11 +157,26 @@ Triangle::Triangle(Point2D* position, char red, char green, char blue, char alph
 
 void Triangle::render(SDL_Renderer* render, int x, int y)
 {
+	int  centerX, centerY, width, height;
+
+	width = 50;
+	height = 50;
+	centerX = 300;
+	centerY = 100;
+
 	cout << "Position : " << position->toString() << endl;
 	cout << "Base : " << base << endl;
 	cout << "Height : " << height << endl;
 
-	int s = SDL_RenderDrawLine(render, x, y, x + 100, y + 100);
+	//int s = SDL_RenderDrawLine(render, x, y, x + 100, y + 100);
+
+	Point2D c1(centerX, centerY - height / 2);
+	Point2D c2(centerX - width / 2, centerY + height / 2);
+	Point2D c3(centerX + width / 2, centerY + height / 2);
+
+	SDL_RenderDrawLine(render, c1.getX(), c1.getY(), c2.getX(), c2.getY());
+	SDL_RenderDrawLine(render, c2.getX(), c2.getY(), c3.getX(), c3.getY());
+	SDL_RenderDrawLine(render, c3.getX(), c3.getY(), c1.getX(), c1.getY());
 
 	//cout << "Success : " << s << endl;
 }
@@ -178,8 +193,36 @@ Circle::Circle(Point2D* position, char red, char green, char blue, char alpha, i
 
 void Circle::render(SDL_Renderer* render, int x, int y)
 {
+	float theta = 0.0;
+	int circlecenterX = 100;
+	int circlecenterY = 100;
+	float step = 2.0 * M_PI / 32;
+	int xpos, ypos ,yposold, xposold;
+	int radius = 40;
+
 	cout << "Position : " << position->toString() << endl;
 	cout << "Radius : " << radius << endl;
+
+	xpos = circlecenterX + radius * cos(theta);
+	ypos = circlecenterY + radius * sin(theta);
+
+	yposold = ypos;
+	xposold = xpos;
+
+	theta += step;
+
+	while (theta <= (2.0 * M_PI + step))
+	{
+		xpos = circlecenterX + radius * cos(theta);
+		ypos = circlecenterY + radius * sin(theta);
+
+		SDL_RenderDrawLine(render, xpos, ypos, xposold, yposold);
+
+		yposold = ypos;
+		xposold = xpos;
+
+		theta += step;
+	}
 }
 
 Rectangle::Rectangle()
@@ -194,9 +237,29 @@ Rectangle::Rectangle(Point2D* position, char red, char green, char blue, char al
 }
 void Rectangle::render(SDL_Renderer* render, int x, int y)
 {
+	
+	int  centerX, centerY, width, height;
+	
+	width = 100;
+	height = 50;
+
 	cout << "Position : " << position->toString() << endl;
 	cout << "Width : " << width << endl;
 	cout << "Height : " << height << endl;
+
+	centerX = 200;
+	centerY = 100;
+
+	Point2D c1(centerX - width / 2, centerY - height / 2);
+	Point2D c2(centerX + width / 2, centerY - height / 2);
+	Point2D c3(centerX + width / 2, centerY + height / 2);
+	Point2D c4(centerX - width / 2, centerY + height / 2);
+	
+	SDL_RenderDrawLine(render, c1.getX(), c1.getY(), c2.getX(), c2.getY());
+	SDL_RenderDrawLine(render, c2.getX(), c2.getY(), c3.getX(), c3.getY());
+	SDL_RenderDrawLine(render, c3.getX(), c3.getY(), c4.getX(), c4.getY());
+	SDL_RenderDrawLine(render, c4.getX(), c4.getY(), c1.getX(), c1.getY());
+
 }
 
 Point2D::Point2D(int x, int y) : x(x), y(y)
@@ -208,6 +271,26 @@ Point2D::Point2D()
 {
 	x = 0;
 	y = 0;
+}
+
+float Point2D::getX()
+{
+	return x;
+}
+
+float Point2D::getY()
+{
+	return y;
+}
+
+void Point2D::setX(float x)
+{
+	x = x;
+}
+
+void Point2D::setY(float y)
+{
+	y = y;
 }
 
 Point2D::Point2D(const Point2D& p2d) // copy constructor
